@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer')
 const async = require('async')
 
 const urls = [
+  'https://hh.ru/employer/1049556?from=MainPage',
   'https://textkernel.careers/career/big-data-software-engineer/',
   'https://textkernel.careers/career/product-owner-data-analytics/',
   'https://textkernel.careers/career/nlp-ml-research-engineer/',
@@ -26,12 +27,14 @@ const urls = [
 ]
 
 function getPageName(url) {
-  return url.split('/').filter(item => item !== '').pop()
+  const urlObj = new URL(url)
+  const pathnameSafe = urlObj.pathname.split('/').join('-')
+  return `${urlObj.hostname}_${pathnameSafe}`
 }
 
 async function processUrl(url, browser) {
   
-  const fileName = `textkernel__${getPageName(url)}.png`
+  const fileName = `${getPageName(url)}.png`
   console.time(`Processing page ${fileName}`)
   const page = await browser.newPage()
   await page.setJavaScriptEnabled(false)
